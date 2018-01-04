@@ -1,0 +1,26 @@
+{
+  "name": "route-vc",
+  "version": "0.0.1",
+  "repository": "git@github.com:Amri91/route-vc.git",
+  "description": "Route version control library.",
+  "main": "index.js",
+  "scripts": {
+    "test": "npm run test:coverage && npm run test:lint",
+    "test:coverage": "jest tests --coverage -i --forceExit",
+    "test:lint": "eslint src",
+    "docs": "jsdoc2md -t jsdoc2md/readme.hbs lib.js > readme.md",
+    "ci": "npm run test:lint && npm run test:coverage && codecov"
+  },
+  "author": "Abdulrahman Amri",
+  "license": "MIT",
+  "dependencies": {
+    "lodash": "^4.17.4",
+    "ramda": "latest"
+  },
+  "devDependencies": {
+    "eslint": "^4.13.1",
+    "eslint-config-warp": "^2.1.0",
+    "jest": "^21.2.1",
+    "jsdoc-to-markdown": "^3.0.3"
+  }
+}
