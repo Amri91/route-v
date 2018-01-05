@@ -5,20 +5,6 @@ const {path, prop, find} = require('ramda');
 const t = require('tcomb');
 
 /**
- * Available predicates
- * @type {{satisfies: string, gt: string, gte: string, lt: string, lte: string, eq: string, neq: string}}
- */
-const predicates = {
-  satisfies: 'compliant with',
-  gt: 'greater than',
-  gte: 'greater than or equal to',
-  lt: 'less than',
-  lte: 'less than or equal to',
-  eq: 'equal to',
-  neq: 'different from'
-};
-
-/**
  * Loops through the versions and finds the first match
  * @param {String} userVersion a valid semver version
  * @param {Array} versions array of conditions
@@ -53,28 +39,23 @@ module.exports = class V {
   /**
    * @param {Function} [extractor] Version extractor, by default it checks the url
    * @param {Array} [versionPath=[0, 'url']] path of the argument sent to the extractor.
-   * @param {Function} [globalVersionChecker] This function is called when you use versionChecker[k]
-   * e.g. versionChecker.satisfied('^1.0.0'). An example of a globalVersionChecker:
-   * (isSatisifed, details) => your custom function like express or koa middleware.
-   * isSatisifed is a boolean that is true if the user version passes, it is false otherwise, the
-   * details always contain the userVersion, the condition (version), and the predicate used.
    */
-  constructor({versionExtractor = defaultVersionExtractor, versionPath = defaultVersionPath, globalVersionChecker} = {}) {
+  constructor({versionExtractor = defaultVersionExtractor, versionPath = defaultVersionPath} = {}) {
     this._versionExtractor = t.Function(versionExtractor);
     this._versionPath = t.Array(versionPath);
-    if(globalVersionChecker) {
-      this._globalVersionChecker = t.Function(globalVersionChecker);
-      this.versionChecker = {};
-      Object.keys(predicates).forEach(k => {
-        this.versionChecker[k] = version => (...args) => {
-          const userVersion = this._versionExtractor(path(this._versionPath, args));
-          this._globalVersionChecker(semver[k](userVersion, version), {
-            userVersion,
-            predicate: predicates[k],
-            version
-          })(...args);
-        };
-      });
+  }
+
+  /**
+   * @param {Function} func
+   */
+  versionChecker(func) {
+    return version => (...args) => {
+      const userVersion = this._versionExtractor(path(this._versionPath, args));
+      func(semver.satisfies(userVersion, version), {
+        userVersion,
+        predicate: 'compliant with',
+        version
+      })(...args);
     }
   }
 
