@@ -1,7 +1,7 @@
 {
-  "name": "route-vc",
+  "name": "route-v",
   "version": "0.0.3",
-  "repository": "git@github.com:Amri91/route-vc.git",
+  "repository": "git@github.com:Amri91/route-v.git",
   "description": "Route version control library.",
   "main": "index.js",
   "scripts": {
