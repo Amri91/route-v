@@ -14,8 +14,9 @@
   "author": "Abdulrahman Amri",
   "license": "MIT",
   "dependencies": {
-    "lodash": "^4.17.4",
-    "ramda": "latest"
+    "ramda": "latest",
+    "semver": "^5.4.1",
+    "tcomb": "^3.2.24"
   },
   "devDependencies": {
     "eslint": "^4.13.1",
