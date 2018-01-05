@@ -49,13 +49,13 @@ describe('Middleware version control', () => {
       expect(versions['>0.0.1'].mock.instances.length).toBe(1);
     });
   });
-  describe('#versionChecker[k]', () => {
-    it('If k is satisfies, it should pass if version satisfied the predicate ^1.0.0', (done) => {
-      v = new V({globalVersionChecker: (isSatisfied, details) => (ctx, next) => {
+  describe('#versionChecker', () => {
+    it('it should pass if version satisfied the predicate ^1.0.0', (done) => {
+      const customVChecker = v.versionChecker((isSatisfied, details) => (ctx, next) => {
         expect(details).toBeTruthy();
         done(!isSatisfied);
-      }});
-      v.versionChecker.satisfies('^1.0.0')({url: getUrl('v1.0.1')});
+      });
+      customVChecker('^1.0.0')({url: getUrl('v1.0.1')});
     })
   })
 });
