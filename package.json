@@ -26,11 +26,13 @@
     "codecov": "^3.0.0"
   },
   "keywords": [
-    "version",
-    "control",
-    "version-control",
+    "versioning",
     "route",
+    "routes",
     "router",
-    "middleware"
+    "semver",
+    "middleware",
+    "koa",
+    "express"
   ]
 }

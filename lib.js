@@ -46,12 +46,14 @@ module.exports = class V {
   }
 
   /**
-   * @param {Function} func
+   * @param {Function} func, signature: (isSatisfied, details) => function
+   * where isSatisfied is true if semver.satisfies returns true and false otherwise, and the details
+   * contain userVersion, predicate, and version.
    */
   versionChecker(func) {
     return version => (...args) => {
       const userVersion = this._versionExtractor(path(this._versionPath, args));
-      func(semver.satisfies(userVersion, version), {
+      return func(semver.satisfies(userVersion, version), {
         userVersion,
         predicate: 'compliant with',
         version
