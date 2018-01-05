@@ -29,16 +29,18 @@ router.get('/', v({
 ## Apply a global version check, useful if all your APIs accept a certain range of versions
 ```
 // Example using koa, but you can apply any other functions.
-v = new V({globalVersionChecker: (isSatisfied, {version, useVersion, predicate}) => (ctx, next) => {
+const V = require('route-v');
+
+const v = new V({globalVersionChecker: (isSatisfied, {version, userVersion, predicate}) =>
+    (ctx, next) => {
     if(isSatisfied) {
         return next();
-    } else {
-        ctx.throw(412, `Version ${userVersion} is not ${predicate} version ${version});
     }
+    return ctx.throw(412, `Version ${userVersion} is not ${predicate} version ${version}`);
 }});
 
 app.use(
-    v.versionChecker.satisfies('^1.0.0')
+    v.versionChecker.satisfies('~1.0.0')
 );
 ```
 
