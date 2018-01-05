@@ -28,7 +28,7 @@ const getFirstMatch = (userVersion, versions) =>
   find(range => semver.satisfies(userVersion, range), versions);
 
 // Match the numbers after the v and between two slashes
-const getVersionRegex = /v(\d*.\d*.\d*)/;
+const getVersionRegex = /v(\d+.\d+.\d+)/;
 
 /**
  * Default path to get the version number,
@@ -95,9 +95,13 @@ module.exports = class V {
     return (...args) => {
       const userVersion = this._versionExtractor(path(this._versionPath, args));
       const conditions = Object.keys(versions);
+      // If the version was invalid, call '*'
+      if(!userVersion) {
+        return versions['*'](...args);
+      }
       const match = getFirstMatch(userVersion, conditions);
       if(!match) throw 'Internal error: version not found';
-      return versions[match](args);
+      return versions[match](...args);
     };
   };
 };
