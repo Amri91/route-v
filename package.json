@@ -1,7 +1,7 @@
 {
-  "name": "route-vc",
-  "version": "0.0.2",
-  "repository": "git@github.com:Amri91/route-vc.git",
+  "name": "route-v",
+  "version": "0.1.0",
+  "repository": "git@github.com:Amri91/route-v.git",
   "description": "Route version control library.",
   "main": "index.js",
   "scripts": {
@@ -14,8 +14,9 @@
   "author": "Abdulrahman Amri",
   "license": "MIT",
   "dependencies": {
-    "lodash": "^4.17.4",
-    "ramda": "latest"
+    "ramda": "latest",
+    "semver": "^5.4.1",
+    "tcomb": "^3.2.24"
   },
   "devDependencies": {
     "eslint": "^4.13.1",

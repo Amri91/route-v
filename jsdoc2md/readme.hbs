@@ -6,23 +6,40 @@
 
 ## Installation
 ```
-npm install route-vc
+npm install route-v
 ```
 
 ## Description
-This package lets you register functions (e.g. middlewares) for the same route and chooses the matching function based on the provided version number in the url or header.
-Assuming version numbers are integers and by default supports getting the version from the url and expects functions to look like express or koa middlewares. Check the config section below to change this behavior.
+This package lets you register functions (e.g. middlewares) for the same route and chooses the matching function based on the provided version number in the url or header (or another place you define).
+Assuming versions are semver versions and by default supports getting the version from the url and expects functions to look like express or koa middlewares. Check the config section below to change this behavior.
 
 ## Usage
 ```
-// By default, this checks the url for /v(\d*)/;
-const {v} = require('route-vc');
-// Assuming v(\d*) is somewhere in the prefix
+// By default, this checks the url for /v(\d*.\d*.\d*)/;
+const V = require('route-v');
+const v = new V();
+// Assuming the version is somewhere in the prefix
 router.get('/', v({
-    0: oldestGetter, // if v0 was provided
-    1: newestGetter, // if v1 was provided
-    default: oldestGetter // otherwise, e.g. no v(x) was provided or the number is not listed, you can also throw an error instead
+    '<1.0.0': oldestGetter,
+    '^1.0.0': newestGetter,
+    '*': oldestGetter // you can also throw an error instead
 })));
+```
+
+## Apply a global version check, useful if all your APIs accept a certain range of versions
+```
+// Example using koa, but you can apply any other functions.
+v = new V({globalVersionChecker: (isSatisfied, {version, useVersion, predicate}) => (ctx, next) => {
+    if(isSatisfied) {
+        return next();
+    } else {
+        ctx.throw(412, `Version ${userVersion} is not ${predicate} version ${version});
+    }
+}});
+
+app.use(
+    v.versionChecker.satisfies('^1.0.0')
+);
 ```
 
 ## Backward compatibility
@@ -30,21 +47,22 @@ Case:
 - You want to put the version number in the url
 - You already have old clients that do not use v(X) at all
 
-You can still use route version control with this regex prefix (/v\\d*)? which will match even the calls that do not provide v(X).
+You can still use route-v with this regex prefix (/v\d*.\d*.\d*)? which will match even the calls that do not provide v(X).
+Just be sure to have '*' in the last key to match those and handle them appropriately.
 
 Here is an example implementation if you are using koa-router, express routers should work similarly.
 
 ```
-const baseUrl = '(/v\\d*)?';
+const baseUrl = '(/v\d*.\d*.\d*)?';
 
 const router = new Router({
-    prefix: `${baseUrl}/resourceName`
+prefix: `${baseUrl}/resourceName`
 });
 
 router.get('/', v({
-    default: oldestGetter,
-    0: oldestGetter,
-    1: newestGetter
+    '<1.0.0': oldestGetter,
+    '^1.0.0': newestGetter,
+    '*': oldestGetter // you can also throw an error instead
 }));
 ```
 
@@ -52,10 +70,10 @@ router.get('/', v({
 By default this package supports getting the version from the url and expects functions to look like express or koa middlewares.
 
 ```
-const {v} = require('route-vc');
+const V = require('route-v');
 
 /**
-* Path to get the version number
+* Path of what to pass to your extractor. It is [0], so it will just pass the first argument
 */
 const versionPath = [0];
 
@@ -72,7 +90,7 @@ const versionExtractor = req => {
 // For reference, here is the default extractor
 /**
 * Attempts to get the version number from the url
-* @param {string} url e.g. segment/v1/anotherSegment
+* @param {string} url e.g. segment/v1.0.0/anotherSegment
 * @returns {string} the X from vX, or undefined
 */
 const defaultVersionExtractor = url => {
@@ -80,27 +98,9 @@ const defaultVersionExtractor = url => {
     return prop(1, regexResult);
 };
 
-const customizedVC = v(versionExtractor, versionPath);
+const v = new V({versionExtractor, versionPath});
 
-// From now on, use customizedVC same as v. Need more flexibility in providing the options? You can curry v.
-router.get('/', customizedVC({
-    default: oldestGetter,
-    0: oldestGetter,
-    1: newestGetter
-}));
-```
-
-## Apply minimum version globally
-You can use a simple middleware for that
-
-```
-exports.minimumVersion = version => (ctx, next) => {
-    if (versionExtractor(ctx.url) >= version) {
-        return next();
-    }
-    ctx.throw(400, 'version not supported');
-};
-
+// Enjoy
 ```
 
 ## Test
