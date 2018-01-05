@@ -31,15 +31,18 @@ router.get('/', v({
 // Example using koa, but you can apply any other functions.
 const V = require('route-v');
 
-const v = new V({globalVersionChecker: (isSatisfied, {version, userVersion, predicate}) =>
-    ctx => {
+const v = new V();
+
+const vChecker = v.versionChecker((isSatisfied, {version, userVersion, predicate}) =>
+    (ctx, next) => {
         if(!isSatisfied) {
-            return ctx.throw(412, `Version ${userVersion} is not ${predicate} version ${version}`);
+            return ctx.throw(410, `Version ${userVersion} is not ${predicate} version ${version}`);
         }
-    }});
+        return next();
+});
 
 app.use(
-    v.versionChecker.satisfies('~1.0.0')
+    vChecker('~1.0.0')
 );
 ```
 
@@ -113,9 +116,6 @@ npm test
 ## Constants
 
 <dl>
-<dt><a href="#predicates">predicates</a> : <code>Object</code></dt>
-<dd><p>Available predicates</p>
-</dd>
 <dt><a href="#defaultVersionPath">defaultVersionPath</a> : <code>Array</code></dt>
 <dd><p>Default path to get the version number,
 By default it takes the first parameter of the middleware,
@@ -135,12 +135,6 @@ and looks for the property url in it.</p>
 </dd>
 </dl>
 
-<a name="predicates"></a>
-
-## predicates : <code>Object</code>
-Available predicates
-
-**Kind**: global constant  
 <a name="defaultVersionPath"></a>
 
 ## defaultVersionPath : <code>Array</code>

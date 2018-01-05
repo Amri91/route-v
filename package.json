@@ -1,6 +1,6 @@
 {
   "name": "route-v",
-  "version": "0.1.3",
+  "version": "0.1.4",
   "repository": "git@github.com:Amri91/route-v.git",
   "description": "Route version control library.",
   "main": "index.js",
@@ -26,11 +26,13 @@
     "codecov": "^3.0.0"
   },
   "keywords": [
-    "version",
-    "control",
-    "version-control",
+    "versioning",
     "route",
+    "routes",
     "router",
-    "middleware"
+    "semver",
+    "middleware",
+    "koa",
+    "express"
   ]
 }

@@ -31,15 +31,18 @@ router.get('/', v({
 // Example using koa, but you can apply any other functions.
 const V = require('route-v');
 
-const v = new V({globalVersionChecker: (isSatisfied, {version, userVersion, predicate}) =>
-    ctx => {
+const v = new V();
+
+const vChecker = v.versionChecker((isSatisfied, {version, userVersion, predicate}) =>
+    (ctx, next) => {
         if(!isSatisfied) {
-            return ctx.throw(412, `Version ${userVersion} is not ${predicate} version ${version}`);
+            return ctx.throw(410, `Version ${userVersion} is not ${predicate} version ${version}`);
         }
-    }});
+        return next();
+});
 
 app.use(
-    v.versionChecker.satisfies('~1.0.0')
+    vChecker('~1.0.0')
 );
 ```
 
