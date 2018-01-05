@@ -19,7 +19,7 @@ Assuming versions are semver versions and by default supports getting the versio
 const V = require('route-v');
 const v = new V();
 // Assuming the version is somewhere in the prefix
-router.get('/', v({
+router.get('/', v.register({
     '<1.0.0': oldestGetter,
     '^1.0.0': newestGetter,
     '*': oldestGetter // you can also throw an error instead
@@ -41,9 +41,18 @@ const vChecker = v.versionChecker((isSatisfied, {version, userVersion, predicate
         return next();
 });
 
-app.use(
-    vChecker('~1.0.0')
-);
+exports.deprecated = exports.v.versionChecker((isSatisfied, {version, userVersion, predicate}) =>
+async (ctx, next) => {
+    if(!isSatisfied) {
+    return next();
+    }
+    await next();
+    // handle deprecated logic
+});
+
+app
+.use(vChecker('<=2.x'))
+.use(deprecated('<=1.0.0'))
 ```
 
 ## Backward compatibility
@@ -62,7 +71,7 @@ const router = new Router({
 prefix: `${baseUrl}/resourceName`
 });
 // Ensure that you have '*'
-router.get('/', v({
+router.get('/', v.register({
     '<1.0.0': oldestGetter,
     '^1.0.0': newestGetter,
     '*': oldestGetter // you can also throw an error instead
@@ -110,6 +119,9 @@ const v = new V({versionExtractor, versionPath});
 ```
 npm test
 ```
+
+Credits:
+Kudus to [Avaq](https://github.com/Avaq), his expertise have been extremely helpful.
 
 ## Documentation
 
