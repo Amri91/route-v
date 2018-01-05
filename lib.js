@@ -72,7 +72,7 @@ module.exports = class V {
             userVersion,
             predicate: predicates[k],
             version
-          })(args);
+          })(...args);
         };
       });
     }
