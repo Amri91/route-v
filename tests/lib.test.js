@@ -31,6 +31,10 @@ describe('Middleware version control', () => {
       v.register(versions)({url: getUrl('v0.0.0')});
       expect(versions['*'].mock.instances.length).toBe(1);
     });
+    it('should call the wild card version if bad version was supplied', () => {
+      v.register(versions)({url: getUrl('v__')});
+      expect(versions['*'].mock.instances.length).toBe(1);
+    });
     it('should throw an error if nothing was matched', () => {
       expect(() => v.register({'0.0.0': jest.fn()})({url: getUrl('v0.0.1')})).toThrow();
     });

@@ -15,7 +15,7 @@ Assuming versions are semver versions and by default supports getting the versio
 
 ## Usage
 ```
-// By default, this checks the url for /v(\d*.\d*.\d*)/;
+// By default, this checks the url for /v(\d+.\d+.\d+)/;
 const V = require('route-v');
 const v = new V();
 // Assuming the version is somewhere in the prefix
@@ -32,12 +32,11 @@ router.get('/', v({
 const V = require('route-v');
 
 const v = new V({globalVersionChecker: (isSatisfied, {version, userVersion, predicate}) =>
-    (ctx, next) => {
-    if(isSatisfied) {
-        return next();
-    }
-    return ctx.throw(412, `Version ${userVersion} is not ${predicate} version ${version}`);
-}});
+    ctx => {
+        if(!isSatisfied) {
+            return ctx.throw(412, `Version ${userVersion} is not ${predicate} version ${version}`);
+        }
+    }});
 
 app.use(
     v.versionChecker.satisfies('~1.0.0')
@@ -48,19 +47,18 @@ app.use(
 Case:
 - You want to put the version number in the url
 - You already have old clients that do not use v(X) at all
-
-You can still use route-v with this regex prefix (/v\d*.\d*.\d*)? which will match even the calls that do not provide v(X).
+You can still use route-v with this regex prefix (/v\d+.\d+.\d+)? which will match even the calls that do not provide v(X).
 Just be sure to have '*' in the last key to match those and handle them appropriately.
 
 Here is an example implementation if you are using koa-router, express routers should work similarly.
 
 ```
-const baseUrl = '(/v\d*.\d*.\d*)?';
+const baseUrl = '(/v\d+.\d+.\d+)?';
 
 const router = new Router({
 prefix: `${baseUrl}/resourceName`
 });
-
+// Ensure that you have '*'
 router.get('/', v({
     '<1.0.0': oldestGetter,
     '^1.0.0': newestGetter,
