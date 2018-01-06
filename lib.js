@@ -35,14 +35,28 @@ const defaultVersionExtractor = url => {
   return prop(1, regexResult);
 };
 
+/**
+ * Default version not found error handler.
+ * It throws an error. Override this if you need another behavior.
+ * @params args destructed arguments, same ones passed to your versions.
+ */
+const defaultVersionNotFoundErrorHandler = (...args) => {
+  throw 'Internal error: no match found';
+};
+
 module.exports = class V {
   /**
    * @param {Function} [extractor] Version extractor, by default it checks the url
    * @param {Array} [versionPath=[0, 'url']] path of the argument sent to the extractor.
    */
-  constructor({versionExtractor = defaultVersionExtractor, versionPath = defaultVersionPath} = {}) {
+  constructor({
+                versionExtractor = defaultVersionExtractor,
+                versionPath = defaultVersionPath,
+                versionNotFoundErrorHandler = defaultVersionNotFoundErrorHandler
+  } = {}) {
     this._versionExtractor = t.Function(versionExtractor);
     this._versionPath = t.Array(versionPath);
+    this._versionNotFoundErrorHandler = t.Function(versionNotFoundErrorHandler);
   }
 
   /**
@@ -78,12 +92,8 @@ module.exports = class V {
     return (...args) => {
       const userVersion = this._versionExtractor(path(this._versionPath, args));
       const conditions = Object.keys(versions);
-      // If the version was invalid, call '*'
-      if(!userVersion) {
-        return versions['*'](...args);
-      }
       const match = getFirstMatch(userVersion, conditions);
-      if(!match) throw 'Internal error: version not found';
+      if(!match) return this._versionNotFoundErrorHandler(...args);
       return versions[match](...args);
     };
   };

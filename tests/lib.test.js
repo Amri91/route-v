@@ -1,5 +1,7 @@
 'use strict';
 
+const {propOr} = require('ramda');
+
 const V = require('../lib');
 
 describe('Middleware version control', () => {
@@ -32,6 +34,10 @@ describe('Middleware version control', () => {
       expect(versions['*'].mock.instances.length).toBe(1);
     });
     it('should call the wild card version if bad version was supplied', () => {
+      v = new V({versionExtractor: url => {
+        const regexResult = /v(\d+.\d+.\d+)/.exec(url);
+        return propOr('0.0.0', 1, regexResult);
+      }});
       v.register(versions)({url: getUrl('v__')});
       expect(versions['*'].mock.instances.length).toBe(1);
     });

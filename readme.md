@@ -10,8 +10,9 @@ npm install route-v
 ```
 
 ## Description
-This package lets you register functions (e.g. middlewares) for the same route and chooses the matching function based on the provided version number in the url or header (or another place you define).
-Assuming versions are semver versions and by default supports getting the version from the url and expects functions to look like express or koa middlewares. Check the config section below to change this behavior.
+This package lets you register functions (e.g. middlewares) for the same route and chooses the matching function based on the provided semver version provided.
+By default this package supports getting the version from the url and expects functions to look like Koa or Express middlewares. Check the config section below to change this behavior.
+This package has been tested in Koa, but it does not depend on it, it should work on express just as well and possibly other frameworks.
 
 ## Usage
 ```
@@ -58,23 +59,30 @@ app
 ## Backward compatibility
 Case:
 - You want to put the version number in the url
-- You already have old clients that do not use v(X) at all
-You can still use route-v with this regex prefix (/v\d+.\d+.\d+)? which will match even the calls that do not provide v(X).
-Just be sure to have '*' in the last key to match those and handle them appropriately.
+- You already have old clients that do not use provide version at all
+You can still use route-v with this regex prefix (/v\d+.\d+.\d+)? on your routes which will match even the calls that do not provide v(X) in the url.
+You need to override the version extractor to return '0.0.0' by default instead of undefined. Expect the case '0.0.0' when you register your routes by adding the key '0.0.0', a wild card can be used as well '*'
 
 Here is an example implementation if you are using koa-router, express routers should work similarly.
 
 ```
+const {propOr} = require('ramda');
 const baseUrl = '(/v\d+.\d+.\d+)?';
 
-const router = new Router({
-prefix: `${baseUrl}/resourceName`
+// The new versionExtractor is just like the default one excepts that it returns 0.0.0 instead of undefined.
+const v = new V({versionExtractor: url => {
+    const regexResult = /v(\d+.\d+.\d+)/.exec(url);
+    return propOr('0.0.0', 1, regexResult);
 });
-// Ensure that you have '*'
+
+const router = new Router({
+    prefix: `${baseUrl}/resourceName`
+});
+// Ensure that you expect the '0.0.0' case
 router.get('/', v.register({
     '<1.0.0': oldestGetter,
     '^1.0.0': newestGetter,
-    '*': oldestGetter // you can also throw an error instead
+    '*': oldestGetter // this will now match
 }));
 ```
 
@@ -145,6 +153,10 @@ and looks for the property url in it.</p>
 <dt><a href="#defaultVersionExtractor">defaultVersionExtractor(url)</a> ⇒ <code>string</code></dt>
 <dd><p>Attempts to get the version number from the url</p>
 </dd>
+<dt><a href="#defaultVersionNotFoundErrorHandler">defaultVersionNotFoundErrorHandler()</a></dt>
+<dd><p>Default version not found error handler.
+It throws an error. Override this if you need another behavior.</p>
+</dd>
 </dl>
 
 <a name="defaultVersionPath"></a>
@@ -181,3 +193,11 @@ Attempts to get the version number from the url
 | --- | --- | --- |
 | url | <code>string</code> | e.g. segment/v1/anotherSegment |
 
+<a name="defaultVersionNotFoundErrorHandler"></a>
+
+## defaultVersionNotFoundErrorHandler()
+Default version not found error handler.
+It throws an error. Override this if you need another behavior.
+
+**Kind**: global function  
+**Params**: args destructed arguments, same ones passed to your versions.  
