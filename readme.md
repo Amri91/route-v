@@ -1,4 +1,4 @@
-# Route version control
+# Route versioning
 [![Build Status](https://travis-ci.org/Amri91/route-vc.svg?branch=master)](https://travis-ci.org/Amri91/route-vc)
 [![codecov](https://codecov.io/gh/Amri91/route-vc/branch/master/graph/badge.svg)](https://codecov.io/gh/Amri91/route-vc)
 [![dependencies Status](https://david-dm.org/amri91/route-vc/status.svg)](https://david-dm.org/Amri91/route-vc)
@@ -10,7 +10,7 @@ npm install route-v
 ```
 
 ## Description
-This package lets you register functions (e.g. middlewares) for the same route and chooses the matching function based on the provided semver version provided.
+This package lets you use multiple versions of your functions (e.g. middlewares) for the same route. It will choose the matching one based on the provided semver version provided.
 By default this package supports getting the version from the url and expects functions to look like Koa or Express middlewares. Check the config section below to change this behavior.
 This package has been tested in Koa, but it does not depend on it, it should work on express just as well and possibly other frameworks.
 

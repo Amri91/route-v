@@ -2,7 +2,7 @@
   "name": "route-v",
   "version": "0.2.0",
   "repository": "git@github.com:Amri91/route-v.git",
-  "description": "Route version control library.",
+  "description": "Route versioning library.",
   "main": "index.js",
   "scripts": {
     "test": "npm run test:coverage && npm run test:lint",
@@ -28,11 +28,11 @@
   "keywords": [
     "versioning",
     "route",
-    "routes",
-    "router",
     "semver",
     "middleware",
     "koa",
-    "express"
+    "express",
+    "routes",
+    "router"
   ]
 }
