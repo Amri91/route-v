@@ -14,14 +14,13 @@ This package lets you use multiple versions of your functions (e.g. middlewares)
 This package has been tested in Koa, but it does not depend on it, it should work on express just as well and possibly other frameworks.
 
 ## Default behavior
-By default this package supports getting the version from the url and expects functions to look like Koa or Express middlewares. Check the config section below to change this behavior.
+By default this package supports getting the version from the url using the regex v(\d+.\d+.\d+) and expects functions to look like Koa or Express middlewares.
+Check the config section below to change this behavior.
 
 ## Usage
 ```
-// By default, this checks the url for /v(\d+.\d+.\d+)/;
 const V = require('route-v');
 const v = new V();
-// Assuming the version is somewhere in the prefix
 router.get('/', v.register({
     '<1.0.0': oldestGetter,
     '^1.0.0': newestGetter,
