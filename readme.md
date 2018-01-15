@@ -1,5 +1,5 @@
 # Route versioning
-[![Build Status](https://travis-ci.org/Amri91/route-vc.svg?branch=master)](https://travis-ci.org/Amri91/route-vc)
+[![Build Status](https://travis-ci.org/Amri91/route-v.svg?branch=master)](https://travis-ci.org/Amri91/route-v)
 [![codecov](https://codecov.io/gh/Amri91/route-vc/branch/master/graph/badge.svg)](https://codecov.io/gh/Amri91/route-vc)
 [![dependencies Status](https://david-dm.org/amri91/route-vc/status.svg)](https://david-dm.org/Amri91/route-vc)
 [![devDependencies Status](https://david-dm.org/amri91/route-vc/dev-status.svg)](https://david-dm.org/Amri91/route-vc?type=dev)
