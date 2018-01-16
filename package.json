@@ -18,11 +18,12 @@
     "tcomb": "^3.2.24"
   },
   "devDependencies": {
+    "ajv": "^5.5.2",
+    "codecov": "^3.0.0",
     "eslint": "^4.13.1",
     "eslint-config-warp": "^2.1.0",
-    "jest": "^22.0.4",
-    "jsdoc-to-markdown": "^3.0.3",
-    "codecov": "^3.0.0"
+    "jest": "^21.0.0",
+    "jsdoc-to-markdown": "^3.0.3"
   },
   "keywords": [
     "versioning",
