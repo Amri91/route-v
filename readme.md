@@ -1,8 +1,9 @@
+
 # Route versioning
 [![Build Status](https://travis-ci.org/Amri91/route-v.svg?branch=master)](https://travis-ci.org/Amri91/route-v)
-[![codecov](https://codecov.io/gh/Amri91/route-vc/branch/master/graph/badge.svg)](https://codecov.io/gh/Amri91/route-vc)
-[![dependencies Status](https://david-dm.org/amri91/route-vc/status.svg)](https://david-dm.org/Amri91/route-vc)
-[![devDependencies Status](https://david-dm.org/amri91/route-vc/dev-status.svg)](https://david-dm.org/Amri91/route-vc?type=dev)
+[![codecov](https://codecov.io/gh/Amri91/route-v/branch/master/graph/badge.svg)](https://codecov.io/gh/Amri91/route-v)
+[![dependencies Status](https://david-dm.org/amri91/route-v/status.svg)](https://david-dm.org/Amri91/route-v)
+[![devDependencies Status](https://david-dm.org/amri91/route-v/dev-status.svg)](https://david-dm.org/Amri91/route-v?type=dev)
 
 ## Installation
 ```
@@ -10,37 +11,35 @@ npm install route-v
 ```
 
 ## Description
-This package lets you use multiple versions of your functions (e.g. middlewares) for the same route. It will choose the matching one based on the provided version.
-This package has been tested in Koa, but it does not depend on it, it should work on express just as well and possibly other frameworks.
+This package lets you version your functions (e.g. middlewares). Tested on Koa but should work for Express and other frameworks.
 
 ## Default behavior
-By default this package supports getting the version from the url using the regex v(\d+.\d+.\d+) and expects functions to look like Koa or Express middlewares.
+Uses the regex v(\d+.\d+.\d+) to get the version from the url and expects functions to look like Koa or Express middlewares.
 Check the config section below to change this behavior.
 
 ## Usage
-```
+```javascript
 const V = require('route-v');
 const v = new V();
 router.get('/', v.register({
+    // Semver range: function
     '<1.0.0': oldestGetter,
     '^1.0.0': newestGetter,
-    '*': oldestGetter // you can also throw an error instead
-})));
+    '*': defaultGetter // matches any other valid version
+}));
 ```
 
-## Apply a global version check, useful if all your APIs accept a certain range of versions
-```
+## Global version check
+```javascript
 // Example using koa, but you can apply any other functions.
 const V = require('route-v');
-
 const v = new V();
-
 const vChecker = v.versionChecker((isSatisfied, {version, userVersion, predicate}) =>
-    (ctx, next) => {
-        if(!isSatisfied) {
-            return ctx.throw(410, `Version ${userVersion} is not ${predicate} version ${version}`);
-        }
-        return next();
+(ctx, next) => {
+    if(!isSatisfied) {
+        return ctx.throw(400, `Version ${userVersion} is not ${predicate} version ${version}`);
+    }
+    return next();
 });
 
 exports.deprecated = exports.v.versionChecker((isSatisfied, {version, userVersion, predicate}) =>
@@ -57,40 +56,9 @@ app
 .use(deprecated('<=1.0.0'))
 ```
 
-## Backward compatibility
-Case:
-- You want to put the version number in the url
-- You already have old clients that do not use provide version at all
-You can still use route-v with this regex prefix (/v\d+.\d+.\d+)? on your routes which will match even the calls that do not provide v(X) in the url.
-You need to override the version extractor to return '0.0.0' by default instead of undefined. Expect the case '0.0.0' when you register your routes by adding the key '0.0.0', a wild card can be used as well '*'
-
-Here is an example implementation if you are using koa-router, express routers should work similarly.
-
-```
-const {propOr} = require('ramda');
-const baseUrl = '(/v\d+.\d+.\d+)?';
-
-// The new versionExtractor is just like the default one excepts that it returns 0.0.0 instead of undefined.
-const v = new V({versionExtractor: url => {
-    const regexResult = /v(\d+.\d+.\d+)/.exec(url);
-    return propOr('0.0.0', 1, regexResult);
-});
-
-const router = new Router({
-    prefix: `${baseUrl}/resourceName`
-});
-// Ensure that you expect the '0.0.0' case
-router.get('/', v.register({
-    '<1.0.0': oldestGetter,
-    '^1.0.0': newestGetter,
-    '*': oldestGetter // this will now match
-}));
-```
-
 ## Config
-By default this package supports getting the version from the url and expects functions to look like express or koa middlewares.
 
-```
+```javascript
 const V = require('route-v');
 
 /**
@@ -138,10 +106,9 @@ Kudus to [Avaq](https://github.com/Avaq), his expertise have been extremely help
 
 <dl>
 <dt><a href="#defaultVersionPath">defaultVersionPath</a> : <code>Array</code></dt>
-<dd><p>Default path to get the version number,
-By default it takes the first parameter of the middleware,
-in Koa it is ctx, in express, it is req
-and looks for the property url in it.</p>
+<dd><p>Default path to the property passed to the version extractor,
+It takes the property &#39;url&#39; of the first parameter of the middleware,
+in Koa it is ctx.url, in express, it is req.url</p>
 </dd>
 </dl>
 
@@ -163,10 +130,9 @@ It throws an error. Override this if you need another behavior.</p>
 <a name="defaultVersionPath"></a>
 
 ## defaultVersionPath : <code>Array</code>
-Default path to get the version number,
-By default it takes the first parameter of the middleware,
-in Koa it is ctx, in express, it is req
-and looks for the property url in it.
+Default path to the property passed to the version extractor,
+It takes the property 'url' of the first parameter of the middleware,
+in Koa it is ctx.url, in express, it is req.url
 
 **Kind**: global constant  
 <a name="getFirstMatch"></a>
@@ -188,11 +154,11 @@ Loops through the versions and finds the first match
 Attempts to get the version number from the url
 
 **Kind**: global function  
-**Returns**: <code>string</code> - the X from vX, or undefined  
+**Returns**: <code>string</code> - the version number, e.g. 1.0.0, or undefined  
 
 | Param | Type | Description |
 | --- | --- | --- |
-| url | <code>string</code> | e.g. segment/v1/anotherSegment |
+| url | <code>string</code> | e.g. segment/v1.0.0/anotherSegment |
 
 <a name="defaultVersionNotFoundErrorHandler"></a>
 
@@ -201,4 +167,4 @@ Default version not found error handler.
 It throws an error. Override this if you need another behavior.
 
 **Kind**: global function  
-**Params**: args destructed arguments, same ones passed to your versions.  
+**Params**: args destructed arguments, same ones passed to your functions.  
