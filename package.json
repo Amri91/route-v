@@ -1,15 +1,14 @@
 {
   "name": "route-v",
-  "version": "1.0.4",
+  "version": "1.0.5",
   "repository": "git@github.com:Amri91/route-v.git",
   "description": "Route versioning library.",
   "main": "index.js",
   "scripts": {
-    "test": "npm run test:coverage && npm run test:lint",
-    "test:coverage": "jest tests --coverage -i --forceExit",
-    "test:lint": "eslint src",
-    "docs": "jsdoc2md -t jsdoc2md/readme.hbs lib.js > readme.md",
-    "ci": "npm run test:lint && npm run test:coverage && codecov"
+    "test": "npm run test:lint && npm run test:coverage",
+    "test:coverage": "jest tests --coverage",
+    "test:lint": "eslint index",
+    "docs": "jsdoc2md -t jsdoc2md/readme.hbs index.js > readme.md"
   },
   "author": "Abdulrahman Amri",
   "license": "MIT",
@@ -19,11 +18,12 @@
     "tcomb": "^3.2.24"
   },
   "devDependencies": {
+    "ajv": "^5.5.2",
+    "codecov": "^3.0.0",
     "eslint": "^4.13.1",
     "eslint-config-warp": "^2.1.0",
-    "jest": "^22.0.4",
-    "jsdoc-to-markdown": "^3.0.3",
-    "codecov": "^3.0.0"
+    "jest": "^21.0.0",
+    "jsdoc-to-markdown": "^3.0.3"
   },
   "keywords": [
     "versioning",

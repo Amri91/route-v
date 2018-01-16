@@ -2,7 +2,7 @@
 
 const {propOr} = require('ramda');
 
-const V = require('../lib');
+const V = require('../index');
 
 describe('Middleware version control', () => {
   const getUrl = version => `segment/${version}/anotherVersion`;
@@ -18,7 +18,7 @@ describe('Middleware version control', () => {
     });
     it('should expect empty params', () => {
       expect(() => new V()).not.toThrow();
-    })
+    });
   });
   describe('#register', () => {
     let versions;
@@ -62,6 +62,6 @@ describe('Middleware version control', () => {
         done(!isSatisfied);
       });
       customVChecker('^1.0.0')({url: getUrl('v1.0.1')});
-    })
-  })
+    });
+  });
 });
