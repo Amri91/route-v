@@ -7,8 +7,7 @@
   "scripts": {
     "test": "npm run test:lint && npm run test:coverage",
     "test:coverage": "jest tests --coverage",
-    "test:lint": "eslint index",
-    "docs": "jsdoc2md -t jsdoc2md/readme.hbs index.js > readme.md"
+    "test:lint": "eslint index"
   },
   "author": "Abdulrahman Amri",
   "license": "MIT",
@@ -22,8 +21,7 @@
     "codecov": "^3.0.0",
     "eslint": "^4.13.1",
     "eslint-config-warp": "^2.1.0",
-    "jest": "^21.0.0",
-    "jsdoc-to-markdown": "^3.0.3"
+    "jest": "^21.0.0"
   },
   "keywords": [
     "versioning",
