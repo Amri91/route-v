@@ -17,11 +17,11 @@
     "tcomb": "^3.2.24"
   },
   "devDependencies": {
-    "ajv": "^5.5.2",
+    "ajv": "^6.1.0",
     "codecov": "^3.0.0",
     "eslint": "^4.13.1",
     "eslint-config-warp": "^2.1.0",
-    "jest": "^21.0.0"
+    "jest": "^22.1.4"
   },
   "keywords": [
     "versioning",
