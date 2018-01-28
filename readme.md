@@ -2,6 +2,7 @@
 
 # Route versioning
 
+[![npm version](https://badge.fury.io/js/route-v.svg)](https://badge.fury.io/js/route-v)
 [![Greenkeeper badge](https://badges.greenkeeper.io/Amri91/route-v.svg)](https://greenkeeper.io/)
 [![Build Status](https://travis-ci.org/Amri91/route-v.svg?branch=master)](https://travis-ci.org/Amri91/route-v)
 [![codecov](https://codecov.io/gh/Amri91/route-v/branch/master/graph/badge.svg)](https://codecov.io/gh/Amri91/route-v)
