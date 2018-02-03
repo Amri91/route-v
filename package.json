@@ -18,7 +18,6 @@
   },
   "devDependencies": {
     "ajv": "^6.1.0",
-    "codecov": "^3.0.0",
     "eslint": "^4.13.1",
     "eslint-config-warp": "^2.1.0",
     "jest": "^22.1.4"
