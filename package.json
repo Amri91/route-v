@@ -1,6 +1,6 @@
 {
   "name": "route-v",
-  "version": "1.0.7",
+  "version": "1.0.8",
   "repository": "git@github.com:Amri91/route-v.git",
   "description": "Route versioning library.",
   "main": "index.js",
@@ -9,7 +9,10 @@
     "test:coverage": "jest tests --coverage",
     "test:lint": "eslint index"
   },
-  "author": "Abdulrahman Amri",
+  "author": "Abdulrahman Amri <a.amri.91@gmail.com> (https://github.com/Amri91)",
+  "engines": {
+    "node": "8.x"
+  },
   "license": "MIT",
   "dependencies": {
     "ramda": "latest",
