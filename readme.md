@@ -19,7 +19,7 @@ npm install route-v
 Tiny route versioning library. Tested on Koa and Express.
 
 ## Default behavior
-Gets the version from URL and expects functions to look like Koa, or Express middlewares. Check the config section below to change this behavior.
+Gets the version from the URL and expects functions to look like Koa, or Express middlewares. Check the config section below to change this behavior.
 
 ## Usage
 
