@@ -81,7 +81,7 @@ exports.app
 ```
 **Behavior:**
 ```
-curl localhost:3000/v6.0.0/greetings // Version 6.0.0 is not compliant with version <=2.x
+curl localhost:3000/v6.0.0/greetings // Version 6.0.0 is not compliant with version <5.x
 ```
 
 ## Config
