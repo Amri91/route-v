@@ -9,7 +9,10 @@
     "test:coverage": "jest tests --coverage",
     "test:lint": "eslint index"
   },
-  "author": "Abdulrahman Amri",
+  "author": "Abdulrahman Amri <a.amri.91@gmail.com> (https://github.com/Amri91)",
+  "engines": {
+    "node": "8.x"
+  },
   "license": "MIT",
   "dependencies": {
     "ramda": "latest",
