@@ -1,6 +1,6 @@
 {
   "name": "route-v",
-  "version": "1.0.8",
+  "version": "2.0.0",
   "repository": "git@github.com:Amri91/route-v.git",
   "description": "Route versioning library.",
   "main": "index.js",
