@@ -43,54 +43,58 @@ const defaultVersionNotFoundErrorHandler = (/* ...args */) => {
   throw new Error('Internal error: no match found');
 };
 
-module.exports = class V {
-  /**
-   * @param {Function} [extractor] Version extractor, by default it checks the url
-   * @param {Array} [versionPath=[0, 'url']] path of the argument sent to the extractor.
-   */
-  constructor({
-    versionExtractor = defaultVersionExtractor,
-    versionPath = defaultVersionPath,
-    versionNotFoundErrorHandler = defaultVersionNotFoundErrorHandler
-  } = {}) {
-    this._versionExtractor = t.Function(versionExtractor);
-    this._versionPath = t.Array(versionPath);
-    this._versionNotFoundErrorHandler = t.Function(versionNotFoundErrorHandler);
-  }
+/**
+ * @param {Function} [extractor] Version extractor, by default it checks the url
+ * @param {Array} [versionPath=[0, 'url']] path of the argument sent to the extractor.
+ */
+module.exports = function V({
+  versionExtractor = defaultVersionExtractor,
+  versionPath = defaultVersionPath,
+  versionNotFoundErrorHandler = defaultVersionNotFoundErrorHandler
+} = {}) {
+
+  t.Function(versionExtractor);
+  t.Array(versionPath);
+  t.Function(versionNotFoundErrorHandler);
 
   /**
    * @param {Function} func, signature: (isSatisfied, details) => function
    * isSatisfied is the result of semver.satisfies, and the details
    * contain userVersion, predicate, and version.
    */
-  versionChecker(func) {
-    return version => (...args) => {
-      const userVersion = this._versionExtractor(path(this._versionPath, args));
+  const versionChecker = func =>
+    version => (...args) => {
+      const userVersion = versionExtractor(path(versionPath, args));
       return func(semver.satisfies(userVersion, version), {
         userVersion,
         predicate: 'compliant with',
         version
       })(...args);
     };
-  }
 
   /**
    * Registers multiple middlewares and returns the matching one when called again
    * @param {Object} versions key: predicate, value: function
    * @returns {Function} middleware
    */
-  register(versions) {
+  const register = versions =>
     /**
      * Executes the matching middleware.
      * @param args
      * @returns {*}
      */
-    return (...args) => {
-      const userVersion = this._versionExtractor(path(this._versionPath, args));
+    (...args) => {
+      const userVersion = versionExtractor(path(versionPath, args));
       const conditions = Object.keys(versions);
       const match = getFirstMatch(userVersion, conditions);
-      if(!match) {return this._versionNotFoundErrorHandler(...args);}
+      if(!match) {return versionNotFoundErrorHandler(...args);}
       return versions[match](...args);
     };
-  }
+
+  return {
+    // Backward compatibility
+    register,
+    versionChecker,
+    v: register
+  };
 };

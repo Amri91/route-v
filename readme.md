@@ -16,11 +16,10 @@ npm install route-v
 ```
 
 ## Description
-This package lets you version your functions (e.g. middlewares). Tested on Koa but should work for Express and other frameworks.
+Tiny and flexible route versioning library.
 
 ## Default behavior
-Uses the regex v(\d+.\d+.\d+) to get the version from the url and expects functions to look like Koa or Express middlewares.
-Check the config section below to change this behavior.
+Gets the version from URL and expects functions to look like Koa, or Express middlewares. Check the config section below to change this behavior.
 
 ## Usage
 

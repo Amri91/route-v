@@ -23,7 +23,11 @@
     "ajv": "^6.1.0",
     "eslint": "^4.13.1",
     "eslint-config-warp": "^2.1.0",
-    "jest": "^22.1.4"
+    "express": "^4.16.2",
+    "jest": "^22.1.4",
+    "koa": "^2.4.1",
+    "koa-router": "^7.4.0",
+    "supertest": "^3.0.0"
   },
   "keywords": [
     "versioning",
