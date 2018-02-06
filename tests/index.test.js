@@ -54,6 +54,25 @@ describe('Middleware version control', () => {
       newV.register(versions)({url: getUrl('_')});
       expect(versions['>0.0.1'].mock.instances.length).toBe(1);
     });
+    it('should throw if * is not the last entry', () => {
+      expect(() => v({
+        '*': () => console,
+        '1.0.0': () => console,
+        '2.0.0': () => console
+      })).toThrow();
+    });
+    it('should throw if one of the values is not a function', () => {
+      expect(() => v({
+        '1.0.0': () => console,
+        '>2.0.0': 1
+      })).toThrow();
+    });
+    it('should throw if a range is not valid', () => {
+      expect(() => v({
+        'helloWorld!': () => console,
+        '2.0.0': () => console
+      })).toThrow();
+    });
   });
   describe('#versionChecker', () => {
     it('it should pass if version satisfied the predicate ^1.0.0', (done) => {

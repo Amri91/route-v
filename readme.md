@@ -16,7 +16,7 @@ npm install route-v
 ```
 
 ## Description
-Tiny route semantic versioning node module for Koa and Express.
+A tiny route semantic versioning library for Koa and Express.
 
 ## Default behavior
 Gets the version from the URL and expects functions to look like Koa, or Express middlewares. Check the config section below to change this behavior.
@@ -37,6 +37,9 @@ const router = new Router({
 
 router
 .get('/', v({
+  // Note that the order matters
+  // Key: any range accepted by semver
+  // value: any function
   '<1.x': ctx => ctx.body = 'hello',
   '^1.0.0': ctx => ctx.body = 'ola',
   // Matches any other valid version
@@ -62,10 +65,10 @@ curl localhost:3000/v2.0.0/greetings // hi
 
 const {versionChecker} = require('route-v')();
 
-const vChecker = versionChecker((isSatisfied, {userVersion, predicate, version}) =>
+const vChecker = versionChecker((isSatisfied, {userVersion, predicate, range}) =>
   (ctx, next) => {
     if(!isSatisfied) {
-      ctx.throw(400, `Version ${userVersion} is not ${predicate} version ${version}`);
+      ctx.throw(400, `Version ${userVersion} is not ${predicate} range ${range}`);
     }
     return next();
   });
@@ -129,6 +132,12 @@ const {v} = routeV({versionExtractor, versionPath});
 ```
 npm test
 ```
+
+## Known issues
+Since the insertion order matters but it is not guaranteed for integers, the library assumes you
+know what you are doing when using integers as ranges.
+https://bugs.chromium.org/p/v8/issues/detail?id=164
+
 
 Credits:
 Kudus to [Avaq](https://github.com/Avaq), his expertise have been extremely helpful.

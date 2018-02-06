@@ -4,10 +4,10 @@ const express = require('express');
 const routeV = require('../index');
 const {v, versionChecker} = routeV();
 
-const vChecker = versionChecker((isSatisfied, {userVersion, predicate, version}) =>
+const vChecker = versionChecker((isSatisfied, {userVersion, predicate, range}) =>
   (req, res, next) => {
     if(!isSatisfied) {
-      return next(`Version ${userVersion} is not ${predicate} version ${version}`);
+      return next(`Version ${userVersion} is not ${predicate} range ${range}`);
     }
     return next();
   });
