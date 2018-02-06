@@ -1,8 +1,38 @@
 'use strict';
 
-const semver = require('semver');
-const {path, prop, find} = require('ramda');
+const {satisfies, validRange} = require('semver');
+const {path, prop, find, keys, map} = require('ramda');
 const t = require('tcomb');
+
+const checkRange = range => {
+  if(!validRange(range)) {
+    throw new Error(`Range: "${range}" is not a valid range`);
+  }
+  return range;
+};
+
+// Produces helpful errors for the user.
+const Routes = routes => {
+  // Routes must be an object
+  t.Object(routes);
+
+  // Values of routes must be functions
+  map(t.Function, Object.values(routes));
+
+  const ranges = keys(routes);
+  // Ranges need to be valid
+  map(checkRange, ranges);
+
+  // * needs to be the last range if present
+  const matchAllIndex = ranges.indexOf('*');
+  // If found and is not the last index
+  if(matchAllIndex !== -1 && matchAllIndex !== (ranges.length - 1)) {
+    // The '*' range is not the last
+    throw new Error(
+      'The * (match all) range is not last, some routes are unreachable because order matters'
+    );
+  }
+};
 
 /**
  * Loops through the versions and finds the first match
@@ -11,7 +41,7 @@ const t = require('tcomb');
  * @returns one value from the versions array or undefined if none matched
  */
 const getFirstMatch = (userVersion, versions) =>
-  find(range => semver.satisfies(userVersion, range), versions);
+  find(range => satisfies(userVersion, range), versions);
 
 // Match the numbers after the v and between two slashes
 const getVersionRegex = /v(\d+.\d+.\d+)/;
@@ -60,36 +90,42 @@ module.exports = function V({
   /**
    * @param {Function} func, signature: (isSatisfied, details) => function
    * isSatisfied is the result of semver.satisfies, and the details
-   * contain userVersion, predicate, and version.
+   * contain userVersion, predicate, version and range (version == range).
    */
   const versionChecker = func =>
-    version => (...args) => {
+    range => (...args) => {
       const userVersion = versionExtractor(path(versionPath, args));
-      return func(semver.satisfies(userVersion, version), {
+      return func(satisfies(userVersion, range), {
         userVersion,
         predicate: 'compliant with',
-        version
+        // backward compatibility
+        version: range,
+        range
       })(...args);
     };
 
   /**
    * Registers multiple middlewares and returns the matching one when called again
-   * @param {Object} versions key: predicate, value: function
+   * @param {Object} routes key: range, value: function
    * @returns {Function} middleware
    */
-  const register = versions =>
+  const register = routes => {
+    Routes(routes);
     /**
      * Executes the matching middleware.
      * @param args
      * @returns {*}
      */
-    (...args) => {
+    return (...args) => {
       const userVersion = versionExtractor(path(versionPath, args));
-      const conditions = Object.keys(versions);
-      const match = getFirstMatch(userVersion, conditions);
-      if(!match) {return versionNotFoundErrorHandler(...args);}
-      return versions[match](...args);
+      const ranges = Object.keys(routes);
+      const match = getFirstMatch(userVersion, ranges);
+      if (!match) {
+        return versionNotFoundErrorHandler(...args);
+      }
+      return routes[match](...args);
     };
+  };
 
   return {
     // Backward compatibility

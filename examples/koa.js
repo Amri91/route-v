@@ -5,10 +5,10 @@ const Router = require('koa-router');
 const routeV = require('../index');
 const {v, versionChecker} = routeV();
 
-const vChecker = versionChecker((isSatisfied, {userVersion, predicate, version}) =>
+const vChecker = versionChecker((isSatisfied, {userVersion, predicate, range}) =>
   (ctx, next) => {
     if(!isSatisfied) {
-      ctx.throw(400, `Version ${userVersion} is not ${predicate} version ${version}`);
+      ctx.throw(400, `Version ${userVersion} is not ${predicate} range ${range}`);
     }
     return next();
   });
