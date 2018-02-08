@@ -19,7 +19,7 @@ npm install route-v
 A tiny route semantic versioning library for Koa and Express.
 
 ## Default behavior
-Gets the version from the URL and expects functions to look like Koa, or Express middlewares. Check the config section below to change this behavior.
+Gets the version from the URL (or header) and expects functions to look like Koa, or Express middlewares. Check the config section below to change this behavior.
 
 ## Usage
 
@@ -59,7 +59,7 @@ curl localhost:3000/v1.0.0/greetings // ola
 curl localhost:3000/v2.0.0/greetings // hi
 ```
 
-### Global version check (Optional)
+### Global version check
 ```javascript
 // ... some omitted setup code
 
@@ -90,43 +90,21 @@ curl localhost:3000/v6.0.0/greetings // Version 6.0.0 is not compliant with vers
 ## Config
 ### Change extractor and path
 ```javascript
-const routeV = require('route-v');
+// If you want to use the header instead of the url
+const {valid} = require('semver');
+// Takes the object "headers" from the first argument of your function (ctx in koa, req in express)
+const versionPath = ['0', 'headers'];
+// Returns the value of the key x-api-version
+// The valid is a semver function that converts the value to a valid version
+const versionExtractor = headers => valid(headers['x-api-version']);
+const {v, versionChecker} = routeV({versionPath, versionExtractor});
 
-/**
-* Path of what to pass to your extractor. It is [0], so it will just pass the first argument
-*/
-const versionPath = [0];
-
-// For reference, this is the default, 0 is the first parameter of the middleware (koa, express) and it contains url in them.
-const defaultVersionPath = [0, 'url'];
-
-/**
-* Function to extract the version from the provided path
-*/
-const versionExtractor = req => {
-    return req.header('api-version');
-};
-
-// For reference, here is the default extractor
-/**
-* Attempts to get the version number from the url
-* @param {string} url e.g. segment/v1.0.0/anotherSegment
-* @returns {string} the X from vX, or undefined
-*/
-const defaultVersionExtractor = url => {
-    const regexResult = getVersionRegex.exec(url);
-    return prop(1, regexResult);
-};
-
-const {v} = routeV({versionExtractor, versionPath});
-
-// Enjoy
+// This would work for express and koa
+// The rest is the same, enjoy
 ```
 
 ## Examples
-[Koa Example](/examples/koa.js)
-
-[Express Example](/examples/express.js)
+[Examples](/examples)
 
 ## Test
 ```
