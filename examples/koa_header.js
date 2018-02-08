@@ -1,12 +1,17 @@
 'use strict';
 
-/** V from URL (Default) */
 const Koa = require('koa');
 const Router = require('koa-router');
+const {valid} = require('semver');
 const routeV = require('../index');
-const {v, versionChecker} = routeV();
 
-const vChecker = versionChecker((isSatisfied, {userVersion, predicate, range}) =>
+const versionPath = ['0', 'headers'];
+const versionExtractor = headers => valid(headers['x-api-version']);
+
+const {v, versionChecker} = routeV({versionPath, versionExtractor});
+
+/** V from Header */
+const headerVChecker = versionChecker((isSatisfied, {userVersion, predicate, range}) =>
   (ctx, next) => {
     if(!isSatisfied) {
       ctx.throw(400, `Version ${userVersion} is not ${predicate} range ${range}`);
@@ -14,13 +19,12 @@ const vChecker = versionChecker((isSatisfied, {userVersion, predicate, range}) =
     return next();
   });
 
-const baseUrl = '/(v\\d+.\\d+.\\d+)';
 const router = new Router({
-  prefix: `${baseUrl}/greetings`
+  prefix: `/greetings`
 });
 
 router
-.use(vChecker('<5.x'))
+.use(headerVChecker('<5.x'))
 .get('/', v({
   '<1.x': ctx => ctx.body = 'hello',
   '^1.0.0': ctx => ctx.body = 'ola',
