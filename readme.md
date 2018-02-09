@@ -1,4 +1,4 @@
-<img src="logo.png" width="362" alt="Route-v-logo" />
+<img src="logo.png" alt="Route-v-logo" />
 
 [![npm version](https://badge.fury.io/js/route-v.svg)](https://badge.fury.io/js/route-v)
 [![Maintainability](https://api.codeclimate.com/v1/badges/4959c1679a6b68990e8b/maintainability)](https://codeclimate.com/github/Amri91/route-v/maintainability)
