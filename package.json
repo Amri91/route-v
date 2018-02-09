@@ -1,6 +1,6 @@
 {
   "name": "route-v",
-  "version": "2.0.6",
+  "version": "2.0.7",
   "repository": "git@github.com:Amri91/route-v.git",
   "description": "A tiny route/api semantic versioning library for Koa and Express.",
   "main": "index.js",
