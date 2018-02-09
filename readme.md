@@ -1,4 +1,4 @@
-# ![Route-V](https://raw.github.com/amri91/route-v/add-logo-update-readme/images/rv.png)
+# ![Route-V](https://raw.github.com/amri91/route-v/master/images/rv.png)
 
 [![npm version](https://badge.fury.io/js/route-v.svg)](https://badge.fury.io/js/route-v)
 [![Maintainability](https://api.codeclimate.com/v1/badges/4959c1679a6b68990e8b/maintainability)](https://codeclimate.com/github/Amri91/route-v/maintainability)
