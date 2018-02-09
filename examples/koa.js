@@ -4,7 +4,11 @@
 const Koa = require('koa');
 const Router = require('koa-router');
 const routeV = require('../index');
-const {v, versionChecker} = routeV();
+
+// If you want to handle all not found errors in the same way
+const versionNotFoundErrorHandler = ctx => ctx.throw(400, 'Version not found');
+
+const {v, versionChecker} = routeV({versionNotFoundErrorHandler});
 
 const vChecker = versionChecker((isSatisfied, {userVersion, predicate, range}) =>
   (ctx, next) => {
@@ -25,7 +29,8 @@ router
   '<1.x': ctx => ctx.body = 'hello',
   '^1.0.0': ctx => ctx.body = 'ola',
   // Matches any other valid version
-  '*': ctx => ctx.body = 'hi'
+  // If you need a fallback
+  //'*': ctx => ctx.body = 'hi'
 }));
 
 exports.app = new Koa();

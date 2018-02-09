@@ -22,10 +22,9 @@ describe('Route V for Koa', () => {
       expect(text).toBe('hello');
     });
     it('should return <hi> when requesting a version other acceptable versions.', async () => {
-      const {text} = await request(koaApp.callback())
+      await request(koaApp.callback())
       .get(`/v2.6.9/greetings`)
-      .expect(200);
-      expect(text).toBe('hi');
+      .expect(400);
     });
     it('should return 400 when requesting a version not compliant with <5.x.', async () => {
       await request(koaApp.callback())
@@ -110,36 +109,36 @@ describe('Route V (headers) for Express', () => {
   describe('GET /v/Greetings', () => {
     it('should return <ola> when requesting a version compliant with ^1.0.0', async () => {
       const {text} = await request(expressAppHeader)
-        .get(`/greetings`)
-        .set('X-API-VERSION', '1.0.0')
-        .expect(200);
+      .get(`/greetings`)
+      .set('X-API-VERSION', '1.0.0')
+      .expect(200);
       expect(text).toBe('ola');
     });
     it('should return <hello> when requesting a version compliant with  <1.x', async () => {
       const {text} = await request(expressAppHeader)
-        .get(`/greetings`)
-        .set('X-API-VERSION', '0.1.1')
-        .expect(200);
+      .get(`/greetings`)
+      .set('X-API-VERSION', '0.1.1')
+      .expect(200);
       expect(text).toBe('hello');
     });
     it('should return <hi> when requesting a version other acceptable versions.', async () => {
       const {text} = await request(expressAppHeader)
-        .get(`/greetings`)
-        .set('X-API-VERSION', '2.6.9')
-        .expect(200);
+      .get(`/greetings`)
+      .set('X-API-VERSION', '2.6.9')
+      .expect(200);
       expect(text).toBe('hi');
     });
     it('should return 400 when requesting a version not compliant with <5.x.', async () => {
       await request(expressAppHeader)
-        .get(`/greetings`)
-        .set('X-API-VERSION', '5.0.1')
-        .expect(400);
+      .get(`/greetings`)
+      .set('X-API-VERSION', '5.0.1')
+      .expect(400);
     });
     it('should return 400 when requesting an invalid version', async () => {
       await request(expressAppHeader)
-        .get(`/greetings`)
-        .set('X-API-VERSION', 'hello')
-        .expect(400);
+      .get(`/greetings`)
+      .set('X-API-VERSION', 'hello')
+      .expect(400);
     });
   });
 });
