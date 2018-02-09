@@ -32,10 +32,11 @@
   "keywords": [
     "versioning",
     "route",
+    "restful",
     "api",
+    "routes",
     "semver",
     "koa",
-    "express",
-    "routes"
+    "express"
   ]
 }

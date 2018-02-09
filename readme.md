@@ -1,6 +1,4 @@
-
-
-# Route V
+# ![Route-V](https://raw.github.com/amri91/route-v/add-logo-update-readme/images/rv.png)
 
 [![npm version](https://badge.fury.io/js/route-v.svg)](https://badge.fury.io/js/route-v)
 [![Maintainability](https://api.codeclimate.com/v1/badges/4959c1679a6b68990e8b/maintainability)](https://codeclimate.com/github/Amri91/route-v/maintainability)
@@ -11,9 +9,7 @@
 [![devDependencies Status](https://david-dm.org/amri91/route-v/dev-status.svg)](https://david-dm.org/Amri91/route-v?type=dev)
 
 ## Installation
-```
-npm install route-v
-```
+> npm install route-v
 
 ## Description
 A tiny route/api semantic versioning library for Koa and Express.
@@ -89,18 +85,29 @@ curl localhost:3000/v6.0.0/greetings // Version 6.0.0 is not compliant with vers
 
 ## Config
 ### Change extractor and path
+If you want to use the header instead of the url.
 ```javascript
-// If you want to use the header instead of the url
 const {valid} = require('semver');
 // Takes the object "headers" from the first argument of your function (ctx in koa, req in express)
 const versionPath = ['0', 'headers'];
 // Returns the value of the key x-api-version
 // The valid is a semver function that converts the value to a valid version
 const versionExtractor = headers => valid(headers['x-api-version']);
-const {v, versionChecker} = routeV({versionPath, versionExtractor});
+const {v} = routeV({versionPath, versionExtractor});
 
 // This would work for express and koa
 // The rest is the same, enjoy
+```
+
+### Add a custom global version not found error handler
+By default, an error will be thrown if the version requested was not found. If this is how to want 
+to handle errors as oppose to using a global version checker or using the '*' range in your routes 
+then this is how to do it.
+```javascript
+// This is for Koa, for express, a similar middleware can be passed
+const versionNotFoundErrorHandler = ctx => ctx.throw(400, 'Version not found');
+const {v} = routeV({versionNotFoundErrorHandler});
+// Enjoy
 ```
 
 ## Examples
