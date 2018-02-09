@@ -1,4 +1,4 @@
-![Route-v-Logo](https://raw.github.com/amri91/route-v/master/images/rv.png)
+<img src="images/logo.png" width="362" alt="Route-v-logo" />
 
 [![npm version](https://badge.fury.io/js/route-v.svg)](https://badge.fury.io/js/route-v)
 [![Maintainability](https://api.codeclimate.com/v1/badges/4959c1679a6b68990e8b/maintainability)](https://codeclimate.com/github/Amri91/route-v/maintainability)
@@ -8,11 +8,12 @@
 [![dependencies Status](https://david-dm.org/amri91/route-v/status.svg)](https://david-dm.org/Amri91/route-v)
 [![devDependencies Status](https://david-dm.org/amri91/route-v/dev-status.svg)](https://david-dm.org/Amri91/route-v?type=dev)
 
-## Installation
-> npm install route-v
+> A tiny route/api semantic versioning library for Koa and Express.
 
-## Description
-A tiny route/api semantic versioning library for Koa and Express.
+## Installation
+```
+npm install route-v
+```
 
 ## Default behavior
 Gets the version from the URL (or header) and expects functions to look like Koa, or Express middlewares. Check the config section below to change this behavior.
