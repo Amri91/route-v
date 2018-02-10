@@ -15,7 +15,7 @@
 npm install route-v
 ```
 
-## Default behavior
+## Behavior
 Gets the version from the URL (or header) and expects functions to look like Koa, or Express middlewares. Check the config section below to change this behavior.
 
 ## Usage
