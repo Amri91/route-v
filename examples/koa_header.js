@@ -27,7 +27,7 @@ router
 .use(headerVChecker('<5.x'))
 .get('/', v({
   '<1.x': ctx => ctx.body = 'hello',
-  '^1.0.0': ctx => ctx.body = 'ola',
+  '^1.0.0': ctx => ctx.body = 'hola',
   // Matches any other valid version
   '*': ctx => ctx.body = 'hi'
 }));
