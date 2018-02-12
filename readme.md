@@ -44,7 +44,7 @@ router
   // Key: any range accepted by semver
   // value: any function
   '<1.x': ctx => ctx.body = 'hello', // if <1.x
-  '^1.0.0': ctx => ctx.body = 'ola', // else if ^1.0.0
+  '^1.0.0': ctx => ctx.body = 'hola', // else if ^1.0.0
   // Matches any other valid version
   '*': ctx => ctx.body = 'hi'        // else
 }));
@@ -58,7 +58,7 @@ app
 **Behavior:**
 ```
 curl localhost:3000/v0.0.0/greetings // hello
-curl localhost:3000/v1.0.0/greetings // ola
+curl localhost:3000/v1.0.0/greetings // hola
 curl localhost:3000/v2.0.0/greetings // hi
 ```
 
@@ -106,7 +106,7 @@ const {v} = routeV({versionPath, versionExtractor});
 ```
 
 ### Add a custom versionNotFoundErrorHandler
-By default, an error will be thrown if the version requested was not found, if it was not handled 
+By default, an error will be thrown if the version requested was not found, if it was not handled
 via a global version checker or by using the '*' range in your routes. Override this way.
 ```javascript
 // This is for Koa, for express, a similar middleware can be passed

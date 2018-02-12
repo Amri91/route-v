@@ -9,11 +9,11 @@ const {app: expressAppHeader} = require('../examples/express_header');
 
 describe('Route V for Koa', () => {
   describe('GET /v/Greetings', () => {
-    it('should return <ola> when requesting a version compliant with ^1.0.0', async () => {
+    it('should return <hola> when requesting a version compliant with ^1.0.0', async () => {
       const {text} = await request(koaApp.callback())
       .get(`/v1.0.0/greetings`)
       .expect(200);
-      expect(text).toBe('ola');
+      expect(text).toBe('hola');
     });
     it('should return <hello> when requesting a version compliant with  <1.x', async () => {
       const {text} = await request(koaApp.callback())
@@ -41,12 +41,12 @@ describe('Route V for Koa', () => {
 
 describe('Route V (headers) for Koa', () => {
   describe('GET /v/Greetings', () => {
-    it('should return <ola> when requesting a version compliant with ^1.0.0', async () => {
+    it('should return <hola> when requesting a version compliant with ^1.0.0', async () => {
       const {text} = await request(koaAppHeader.callback())
       .get(`/greetings`)
       .set('X-API-VERSION', '1.0.0')
       .expect(200);
-      expect(text).toBe('ola');
+      expect(text).toBe('hola');
     });
     it('should return <hello> when requesting a version compliant with  <1.x', async () => {
       const {text} = await request(koaAppHeader.callback())
@@ -79,11 +79,11 @@ describe('Route V (headers) for Koa', () => {
 
 describe('Route V for express', () => {
   describe('GET /v/Greetings', () => {
-    it('should return <ola> when requesting a version compliant with ^1.0.0', async () => {
+    it('should return <hola> when requesting a version compliant with ^1.0.0', async () => {
       const {text} = await request(expressApp)
       .get(`/v1.0.0/greetings`)
       .expect(200);
-      expect(text).toBe('ola');
+      expect(text).toBe('hola');
     });
     it('should return <hello> when requesting a version compliant with  <1.x', async () => {
       const {text} = await request(expressApp)
@@ -107,12 +107,12 @@ describe('Route V for express', () => {
 
 describe('Route V (headers) for Express', () => {
   describe('GET /v/Greetings', () => {
-    it('should return <ola> when requesting a version compliant with ^1.0.0', async () => {
+    it('should return <hola> when requesting a version compliant with ^1.0.0', async () => {
       const {text} = await request(expressAppHeader)
       .get(`/greetings`)
       .set('X-API-VERSION', '1.0.0')
       .expect(200);
-      expect(text).toBe('ola');
+      expect(text).toBe('hola');
     });
     it('should return <hello> when requesting a version compliant with  <1.x', async () => {
       const {text} = await request(expressAppHeader)

@@ -21,7 +21,7 @@ exports.app
 .use(vChecker('<5.x'))
 .get('/greetings', v({
   '<1.x': (req, res) => res.send('hello'),
-  '^1.0.0': (req, res) => res.send('ola'),
+  '^1.0.0': (req, res) => res.send('hola'),
   // Matches any other valid version
   '*': (req, res) => res.send('hi')
 }))
