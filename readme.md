@@ -16,13 +16,13 @@ npm install route-v
 ```
 
 ## Default Behavior
-Gets the version from the URL and expects Routes/APIs to look like Koa or Express.
+Gets the version from the URL (originalUrl) and expects Routes/APIs to look like Koa or Express middleware.
 
 ## Features
 - Supports all semver ranges E.g. <2.x, *, ~1.0.0.
 - Supports Koa and Express by default.
 - Easily change the version source E.g, from URL to headers or both.
-- Can work with other frameworks (May require some configurations).
+- Can be used to version any function (May require some configurations).
 
 ## Usage
 
