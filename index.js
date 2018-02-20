@@ -52,7 +52,7 @@ const getVersionRegex = /v(\d+.\d+.\d+)/;
  * in Koa it is ctx.url, in express, it is req.url
  * @type {Array}
  */
-const defaultVersionPath = [0, 'url'];
+const defaultVersionPath = [0, 'originalUrl'];
 
 /**
  * Attempts to get the version number from the url
