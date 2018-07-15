@@ -5,10 +5,9 @@ const Router = require('koa-router');
 const {valid} = require('semver');
 const routeV = require('../index');
 
-const versionPath = ['0', 'headers'];
-const versionExtractor = headers => valid(headers['x-api-version']);
+const versionExtractor = ctx => valid(ctx.headers['x-api-version']);
 
-const {v, versionChecker} = routeV({versionPath, versionExtractor});
+const {v, versionChecker} = routeV({versionExtractor});
 
 /** V from Header */
 const headerVChecker = versionChecker((isSatisfied, {userVersion, predicate, range}) =>

@@ -24,6 +24,11 @@ Gets the version from the URL (originalUrl) and expects Routes/APIs to look like
 - Easily change the version source E.g, from URL to headers or both.
 - Can be used to version any function (May require some configurations).
 
+## Migration from version 2 to 3 notes:
+1. Removed the deprecated property register returned by the function constructor, use v instead.
+1. Removed the deprecated property version returned by the function versionChecker, use range instead.
+1. versionExtractor now takes exactly the same arguments as your versioned routes (functions)
+
 ## Usage
 
 ### Registering routes
@@ -96,18 +101,14 @@ curl localhost:3000/v6.0.0/greetings // Version 6.0.0 is not compliant with vers
 If you want to use the header instead of the url.
 ```javascript
 const {valid} = require('semver');
-// Defines what is passed to your versionExtractor.
 // Points to the object "headers" from the first argument of your function (ctx in koa, req in express)
-const versionPath = ['0', 'headers'];
-// Takes whatever versionPath is pointing to and returns the value of the key x-api-version
-// The valid is a semver function that converts the value to a valid version
-const versionExtractor = headers => valid(headers['x-api-version']);
-const {v} = routeV({versionPath, versionExtractor});
+// and returns the value of the key x-api-version
+const versionExtractor = ctxOrReq => valid(ctxOrReq.headers['x-api-version']);
+const {v} = routeV({versionExtractor});
 ```
 
 ### Add a custom versionNotFoundErrorHandler
-By default, an error will be thrown if the version requested was not found, if it was not handled
-via a global version checker or by using the '*' range in your routes. Override this way.
+By default, an error will be thrown if the version requested was not found.
 ```javascript
 // This is for Koa, for express, a similar middleware can be passed
 const versionNotFoundErrorHandler = ctx => ctx.throw(400, 'Version not found');
