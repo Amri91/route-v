@@ -4,9 +4,9 @@ const express = require('express');
 const routeV = require('../index');
 
 const {valid} = require('semver');
-const versionPath = ['0', 'headers'];
-const versionExtractor = headers => valid(headers['x-api-version']);
-const {v, versionChecker} = routeV({versionPath, versionExtractor});
+const versionExtractor = req => valid(req.headers['x-api-version']);
+
+const {v, versionChecker} = routeV({versionExtractor});
 
 const vChecker = versionChecker((isSatisfied, {userVersion, predicate, range}) =>
   (req, res, next) => {

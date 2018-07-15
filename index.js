@@ -1,17 +1,20 @@
 'use strict';
 
 const {satisfies, validRange} = require('semver');
-const {path, prop, find, keys, map} = require('ramda');
+const {prop, find, keys, map, compose, not, filter} = require('ramda');
 const t = require('tcomb');
 
-const checkRange = range => {
-  if(!validRange(range)) {
-    throw new Error(`Range: "${range}" is not a valid range`);
-  }
-  return range;
-};
+const VersionPath =
+  t.refinement(
+    t.Nil,
+    not,
+    'VersionPath (No longer supported in the new version of route-v, check the docs)'
+  );
 
-// Produces helpful errors for the user.
+// (Not actual signature) getBadRanges :: Array<String> a => a -> a
+const getBadRanges = filter(compose(not, validRange));
+
+// Produces verbose errors for the user.
 const Routes = routes => {
   // Routes must be an object
   t.Object(routes);
@@ -21,7 +24,10 @@ const Routes = routes => {
 
   const ranges = keys(routes);
   // Ranges need to be valid
-  map(checkRange, ranges);
+  const badRanges = getBadRanges(ranges);
+  if (badRanges.length) {
+    throw new Error(`The following ranges are invalid: ${badRanges}`);
+  }
 
   // * needs to be the last range if present
   const matchAllIndex = ranges.indexOf('*');
@@ -35,16 +41,24 @@ const Routes = routes => {
 };
 
 /**
+ * @param {Array} ranges array of conditions
+ * @returns function(String): * function that takes a single userVersion
+ */
+// (Not actual signature) setupFind :: xs -> x -> Maybe x
+const setupFind = ranges =>
+/**
  * Loops through the versions and finds the first match
  * @param {String} userVersion a valid semver version
- * @param {Array} versions array of conditions
  * @returns one value from the versions array or undefined if none matched
  */
-const getFirstMatch = (userVersion, versions) =>
-  find(range => satisfies(userVersion, range), versions);
+  userVersion =>
+    find(range => satisfies(userVersion, range), ranges);
 
 // Match the numbers after the v and between two slashes
-const getVersionRegex = /v(\d+.\d+.\d+)/;
+const vRegex = new RegExp(/v(\d+.\d+.\d+)/);
+
+// (Not actual signature) execVerRegex :: String s => s -> Boolean
+const execVerRegex = s => vRegex.exec(s);
 
 /**
  * Default path to the property passed to the version extractor,
@@ -52,17 +66,15 @@ const getVersionRegex = /v(\d+.\d+.\d+)/;
  * in Koa it is ctx.url, in express, it is req.url
  * @type {Array}
  */
-const defaultVersionPath = [0, 'originalUrl'];
+const getUrl = prop('originalUrl');
 
 /**
  * Attempts to get the version number from the url
  * @param {string} url e.g. segment/v1.0.0/anotherSegment
  * @returns {string} the version number, e.g. 1.0.0, or undefined
  */
-const defaultVersionExtractor = url => {
-  const regexResult = getVersionRegex.exec(url);
-  return prop(1, regexResult);
-};
+// (Not actual signature) vExtractor :: String s => obj -> Maybe s
+const defaultVersionExtractor = compose(prop(1), execVerRegex, getUrl);
 
 /**
  * Default version not found error handler.
@@ -74,18 +86,18 @@ const defaultVersionNotFoundErrorHandler = (/* ...args */) => {
 };
 
 /**
- * @param {Function} [extractor] Version extractor, by default it checks the url
- * @param {Array} [versionPath=[0, 'url']] path of the argument sent to the extractor.
+ * @param {Function} [versionExtractor] Version extractor, by default it checks the url
+ * @param {Function} [versionNotFoundErrorHandler] Executed when no matching
+ * function is found, by default throws a native and error.
  */
 module.exports = function V({
   versionExtractor = defaultVersionExtractor,
-  versionPath = defaultVersionPath,
-  versionNotFoundErrorHandler = defaultVersionNotFoundErrorHandler
+  versionNotFoundErrorHandler = defaultVersionNotFoundErrorHandler,
+  versionPath
 } = {}) {
-
   t.Function(versionExtractor);
-  t.Array(versionPath);
   t.Function(versionNotFoundErrorHandler);
+  VersionPath(versionPath);
 
   /**
    * @param {Function} func, signature: (isSatisfied, details) => function
@@ -94,12 +106,10 @@ module.exports = function V({
    */
   const versionChecker = func =>
     range => (...args) => {
-      const userVersion = versionExtractor(path(versionPath, args));
+      const userVersion = versionExtractor(...args);
       return func(satisfies(userVersion, range), {
         userVersion,
         predicate: 'compliant with',
-        // backward compatibility
-        version: range,
         range
       })(...args);
     };
@@ -111,15 +121,15 @@ module.exports = function V({
    */
   const register = routes => {
     Routes(routes);
+    const findMatch = setupFind(Object.keys(routes));
     /**
      * Executes the matching middleware.
      * @param args
      * @returns {*}
      */
     return (...args) => {
-      const userVersion = versionExtractor(path(versionPath, args));
-      const ranges = Object.keys(routes);
-      const match = getFirstMatch(userVersion, ranges);
+      const userVersion = versionExtractor(...args);
+      const match = findMatch(userVersion);
       if (!match) {
         return versionNotFoundErrorHandler(...args);
       }
@@ -128,8 +138,6 @@ module.exports = function V({
   };
 
   return {
-    // Backward compatibility
-    register,
     versionChecker,
     v: register
   };
