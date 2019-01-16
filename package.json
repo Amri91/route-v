@@ -27,7 +27,7 @@
     "jest": "^23.5.0",
     "koa": "^2.4.1",
     "koa-router": "^7.4.0",
-    "supertest": "3.2.0"
+    "supertest": "3.4.0"
   },
   "keywords": [
     "versioning",
