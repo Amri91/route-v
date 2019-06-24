@@ -16,7 +16,7 @@
   "license": "MIT",
   "dependencies": {
     "ramda": "latest",
-    "semver": "^5.4.1",
+    "semver": "^6.1.2",
     "tcomb": "^3.2.24"
   },
   "devDependencies": {
